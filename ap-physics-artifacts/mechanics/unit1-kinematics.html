@@ -1,0 +1,1865 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kinematics 全景 · AP Physics C, Unit 1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Manrope:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Serif+TC:wght@400;600;700&display=swap" rel="stylesheet">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+  svg: { fontCache: 'global' },
+  startup: { typeset: false }
+};
+</script>
+<script id="MathJax-script" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js"></script>
+<style>
+:root {
+  --paper: #EEE6D6;
+  --paper-light: #F5EFE1;
+  --paper-warm: #E5DAC0;
+  --paper-deep: #D7CAA6;
+  --ink: #1A1612;
+  --ink-soft: #44382D;
+  --ink-mid: #6B5F4E;
+  --ink-faint: #968A72;
+  --rule: #CFC4A8;
+  --rule-strong: #A89A7C;
+  --x-c: #1F3F6E;       /* Prussian blue · position */
+  --v-c: #B65331;       /* Cinnabar · velocity */
+  --a-c: #2E5E3F;       /* Forest · acceleration */
+  --vec-c: #6B3866;     /* Mulberry · resultant */
+  --grav-c: #8C2E2A;    /* Brick red · gravity */
+  --highlight: #F0DCA4; /* Warm highlight */
+  --shaded-v: rgba(182, 83, 49, 0.18);
+  --shaded-a: rgba(46, 94, 63, 0.18);
+  --display: 'Fraunces', 'Noto Serif TC', Georgia, serif;
+  --body: 'Manrope', 'Noto Sans TC', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: var(--paper); color: var(--ink); font-family: var(--body); }
+body {
+  min-height: 100vh;
+  font-size: 14px;
+  line-height: 1.55;
+  background:
+    radial-gradient(ellipse 1400px 700px at 50% -200px, rgba(140, 100, 50, 0.05), transparent 70%),
+    var(--paper);
+  background-attachment: fixed;
+}
+button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+
+/* Subtle paper grain */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.4  0 0 0 0 0.3  0 0 0 0 0.2  0 0 0 0.6 0'/></filter><rect width='220' height='220' filter='url(%23n)'/></svg>");
+  opacity: 0.06;
+  pointer-events: none;
+  z-index: 1;
+  mix-blend-mode: multiply;
+}
+.app, header, .grid, footer, main { position: relative; z-index: 2; }
+
+.app { max-width: 1600px; margin: 0 auto; padding: 28px 22px 60px; }
+
+/* ── Header ─────────────────────────────────────────────────────────────── */
+header {
+  display: flex; flex-direction: column; gap: 14px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 24px;
+}
+.title-row { display: flex; align-items: baseline; flex-wrap: wrap; gap: 14px 16px; }
+h1 {
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: clamp(30px, 4.5vw, 48px);
+  letter-spacing: -0.02em;
+  line-height: 1;
+  font-variation-settings: 'opsz' 144;
+  color: var(--ink);
+}
+.subtitle {
+  font-family: var(--display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(14px, 1.7vw, 20px);
+  color: var(--ink-mid);
+  letter-spacing: 0;
+}
+.tag-chip {
+  display: inline-block;
+  padding: 3px 10px;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: 1px solid var(--rule-strong);
+  border-radius: 999px;
+  color: var(--ink-soft);
+  font-weight: 500;
+  background: var(--paper-light);
+}
+.tagline {
+  font-size: 13.5px;
+  color: var(--ink-mid);
+  max-width: 760px;
+  line-height: 1.6;
+}
+.tagline em {
+  color: var(--ink);
+  font-family: var(--display);
+  font-style: italic;
+  font-weight: 500;
+}
+
+/* ── Tab nav ────────────────────────────────────────────────────────────── */
+.module-tabs {
+  display: flex; gap: 4px;
+  padding: 5px;
+  background: var(--paper-light);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  width: fit-content;
+  flex-wrap: wrap;
+}
+.mod-tab {
+  padding: 10px 16px;
+  border-radius: 9px;
+  font-size: 13px; font-weight: 500;
+  display: flex; flex-direction: column; gap: 2px;
+  transition: all 0.18s ease;
+  white-space: nowrap;
+  color: var(--ink-mid);
+}
+.mod-tab:hover { background: var(--paper-warm); color: var(--ink); }
+.mod-tab.active {
+  background: var(--paper-warm);
+  color: var(--ink);
+  box-shadow: inset 0 0 0 1px var(--rule-strong), 0 1px 3px rgba(80, 60, 30, 0.08);
+}
+.tab-en { font-family: var(--display); font-weight: 500; font-size: 13px; letter-spacing: -0.01em; }
+.tab-zh { font-size: 11px; color: var(--ink-faint); font-weight: 400; }
+.mod-tab.active .tab-zh { color: var(--ink-mid); }
+
+/* ── Modules ────────────────────────────────────────────────────────────── */
+.module { display: none; }
+.module.active { display: block; }
+
+.module-header {
+  margin-bottom: 18px;
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.module-title {
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: clamp(22px, 3vw, 30px);
+  letter-spacing: -0.015em;
+  line-height: 1.1;
+  font-variation-settings: 'opsz' 144;
+}
+.module-subtitle {
+  font-family: var(--display);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--ink-mid);
+  font-size: 14px;
+}
+.module-blurb {
+  font-size: 13px;
+  color: var(--ink-mid);
+  max-width: 720px;
+  line-height: 1.55;
+  margin-top: 2px;
+}
+
+/* Panels */
+.panel {
+  background: var(--paper-light);
+  border: 1px solid var(--rule);
+  border-radius: 14px;
+  overflow: hidden;
+}
+.panel-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--rule);
+  background: var(--paper-warm);
+  gap: 12px;
+}
+.panel-title {
+  font-family: var(--display);
+  font-weight: 500;
+  font-style: italic;
+  font-size: 14px;
+  display: inline-flex; align-items: baseline; gap: 8px;
+}
+.panel-title .zh {
+  font-family: var(--body);
+  font-style: normal;
+  font-size: 11px; color: var(--ink-faint);
+  font-weight: 400;
+  letter-spacing: 0.04em;
+}
+.panel-meta {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-mid);
+}
+.panel-body { padding: 16px; }
+
+canvas { display: block; }
+
+/* Controls */
+.btn {
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: var(--paper-light);
+  border: 1px solid var(--rule);
+  font-size: 12px; font-weight: 500;
+  letter-spacing: 0.02em;
+  display: inline-flex; align-items: center; gap: 6px;
+  transition: all 0.15s ease;
+  color: var(--ink);
+}
+.btn:hover { background: var(--paper-warm); border-color: var(--rule-strong); }
+.btn.primary {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper-light);
+}
+.btn.primary:hover { background: var(--ink-soft); }
+
+.params { display: grid; gap: 14px; }
+.param { display: grid; gap: 6px; }
+.param-label { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.param-label .name {
+  font-family: var(--display);
+  font-style: italic;
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--ink);
+}
+.param-label .desc {
+  font-size: 10.5px;
+  color: var(--ink-faint);
+  margin-left: 8px;
+  letter-spacing: 0.02em;
+}
+.param-label .value {
+  font-family: var(--mono);
+  font-size: 12px; font-weight: 500;
+  color: var(--x-c);
+}
+.param.v-color .param-label .value { color: var(--v-c); }
+.param.a-color .param-label .value { color: var(--a-c); }
+
+input[type="range"] {
+  -webkit-appearance: none; appearance: none;
+  width: 100%; height: 4px;
+  background: var(--paper-deep);
+  border-radius: 2px;
+  outline: none;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--ink);
+  cursor: pointer;
+  box-shadow: 0 0 0 3px rgba(26, 22, 18, 0.12);
+  transition: transform 0.15s ease;
+}
+input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.15); }
+input[type="range"]::-moz-range-thumb {
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--ink);
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 0 0 3px rgba(26, 22, 18, 0.12);
+}
+
+.toggle-row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.toggle {
+  display: inline-flex; align-items: center; gap: 8px;
+  cursor: pointer;
+  font-size: 12px; color: var(--ink-mid);
+  user-select: none;
+}
+.toggle input { display: none; }
+.toggle .switch {
+  width: 32px; height: 18px;
+  background: var(--paper-deep);
+  border: 1px solid var(--rule-strong);
+  border-radius: 999px;
+  position: relative;
+  transition: background 0.2s;
+}
+.toggle .switch::after {
+  content: '';
+  position: absolute; top: 1px; left: 1px;
+  width: 14px; height: 14px;
+  background: var(--paper-light);
+  border: 1px solid var(--rule-strong);
+  border-radius: 50%;
+  transition: transform 0.2s;
+}
+.toggle input:checked + .switch { background: var(--ink); border-color: var(--ink); }
+.toggle input:checked + .switch::after { transform: translateX(14px); border-color: var(--ink); }
+
+/* Layout grids */
+.grid-2col {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+@media (max-width: 980px) { .grid-2col { grid-template-columns: 1fr; } }
+
+.stack { display: flex; flex-direction: column; gap: 14px; }
+
+/* Readout grid */
+.readout-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 14px;
+  padding: 14px 16px;
+}
+.readout-item { display: flex; flex-direction: column; gap: 2px; }
+.readout-label {
+  font-size: 10px; letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.readout-value {
+  font-family: var(--mono);
+  font-size: 16px; font-weight: 500;
+  color: var(--ink);
+}
+.readout-value .unit {
+  font-size: 11px; color: var(--ink-mid);
+  margin-left: 4px; font-weight: 400;
+}
+
+/* Math display block */
+.math-block {
+  padding: 14px 16px;
+  background: var(--paper);
+  border-top: 1px solid var(--rule);
+  display: flex; flex-direction: column; gap: 4px;
+}
+.math-label {
+  font-size: 10px; letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  font-family: var(--body);
+  margin-top: 6px;
+}
+.math-label:first-child { margin-top: 0; }
+.math-display { font-family: var(--display); color: var(--ink); }
+
+/* Trinity-specific */
+#trinity-particle { width: 100%; height: 130px; background: var(--paper-light); border-radius: 8px; }
+.trinity-graph { width: 100%; height: 165px; cursor: ew-resize; background: var(--paper-light); }
+.trinity-graph-label {
+  display: flex; align-items: baseline; justify-content: space-between;
+  padding: 7px 12px;
+  background: var(--paper-warm);
+  border-bottom: 1px solid var(--rule);
+}
+.trinity-graph-label .name {
+  font-family: var(--display);
+  font-style: italic;
+  font-weight: 500;
+  font-size: 13px;
+}
+.trinity-graph-label .name .small {
+  font-family: var(--body);
+  font-style: normal;
+  font-weight: 400;
+  font-size: 10px;
+  color: var(--ink-faint);
+  margin-left: 6px;
+  letter-spacing: 0.06em;
+}
+.trinity-graph-label .now-val {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* Projectile-specific */
+#proj-scene { width: 100%; height: 380px; background: var(--paper-light); border-radius: 8px; }
+.proj-mini-graphs {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+}
+.mini-graph-card {
+  background: var(--paper-light);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.mini-graph-card canvas { width: 100%; height: 110px; }
+
+/* Vector-specific */
+#vec-canvas { width: 100%; aspect-ratio: 1.15 / 1; background: var(--paper-light); border-radius: 8px; cursor: crosshair; }
+
+/* Footer */
+footer {
+  margin-top: 32px;
+  padding-top: 18px;
+  border-top: 1px solid var(--rule);
+  font-size: 11px;
+  color: var(--ink-faint);
+  display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+  font-family: var(--mono);
+}
+footer .pillars { display: flex; gap: 14px; flex-wrap: wrap; }
+.pillar { display: inline-flex; align-items: center; gap: 6px; }
+.pillar::before {
+  content: '';
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--ink-faint);
+}
+.pillar.x::before { background: var(--x-c); }
+.pillar.v::before { background: var(--v-c); }
+.pillar.a::before { background: var(--a-c); }
+.pillar.r::before { background: var(--vec-c); }
+.pillar.g::before { background: var(--grav-c); }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="title-row">
+      <h1>Kinematics 全景</h1>
+      <span class="subtitle">Visualizing motion · 看見運動</span>
+      <span class="tag-chip">AP Physics C · Unit 1</span>
+    </div>
+    <p class="tagline"><em>Unit 1 是骨架。</em>位置→速度→加速度的微積分鏈、二維拋體運動的軸獨立性、向量代數——所有後面 7 個 unit 都站在這上面。把每個會出現在白板上的圖都做成可拖、可調的活物。</p>
+    <nav class="module-tabs" id="moduleTabs">
+      <button class="mod-tab active" data-module="trinity">
+        <span class="tab-en">Kinematic Trinity</span>
+        <span class="tab-zh">三聯圖 · 1D 運動</span>
+      </button>
+      <button class="mod-tab" data-module="projectile">
+        <span class="tab-en">Projectile Motion</span>
+        <span class="tab-zh">拋體運動 · 2D</span>
+      </button>
+      <button class="mod-tab" data-module="vectors">
+        <span class="tab-en">Vector Playground</span>
+        <span class="tab-zh">向量遊戲場</span>
+      </button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- ═══════════════════════ MODULE 1: TRINITY ═══════════════════════ -->
+    <section class="module active" data-module="trinity">
+      <div class="module-header">
+        <h2 class="module-title">Kinematic Trinity</h2>
+        <span class="module-subtitle">x(t), v(t), a(t) — and the calculus that links them</span>
+      </div>
+      <p class="module-blurb">三張圖，一條 scrubber 線。拖動時間，看 <strong>切線斜率 = 上一階導數</strong>、<strong>圖下面積 = 下一階積分</strong>。Physics C 跟 Physics 1 的分水嶺就在這。</p>
+
+      <div class="grid-2col">
+        <div class="stack">
+          <div class="panel">
+            <div class="panel-header">
+              <span class="panel-title">Particle on a track <span class="zh">質點即時位置</span></span>
+              <span class="panel-meta" id="trinity-time">t = 0.00 s</span>
+            </div>
+            <div style="padding: 8px;">
+              <canvas id="trinity-particle"></canvas>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="trinity-graph-label">
+              <span class="name">x(t) <span class="small">POSITION · 位置</span></span>
+              <span class="now-val" style="color: var(--x-c);" id="trinity-x-now">x = 0.00 m</span>
+            </div>
+            <canvas class="trinity-graph" id="trinity-x"></canvas>
+          </div>
+
+          <div class="panel">
+            <div class="trinity-graph-label">
+              <span class="name">v(t) <span class="small">VELOCITY · 速度 = dx/dt</span></span>
+              <span class="now-val" style="color: var(--v-c);" id="trinity-v-now">v = 0.00 m/s</span>
+            </div>
+            <canvas class="trinity-graph" id="trinity-v"></canvas>
+          </div>
+
+          <div class="panel">
+            <div class="trinity-graph-label">
+              <span class="name">a(t) <span class="small">ACCELERATION · 加速度 = dv/dt</span></span>
+              <span class="now-val" style="color: var(--a-c);" id="trinity-a-now">a = 0.00 m/s²</span>
+            </div>
+            <canvas class="trinity-graph" id="trinity-a"></canvas>
+          </div>
+        </div>
+
+        <div class="stack">
+          <div class="panel">
+            <div class="panel-header">
+              <span class="panel-title">Controls <span class="zh">控制</span></span>
+            </div>
+            <div class="panel-body" style="display: flex; flex-direction: column; gap: 16px;">
+              <div class="toggle-row">
+                <button class="btn primary" id="trinity-play">▶ Animate t</button>
+                <button class="btn" id="trinity-rewind">↺</button>
+                <span style="font-size:11px; color: var(--ink-faint); margin-left: auto;">drag scrubber on any graph</span>
+              </div>
+              <div class="params" id="trinity-params"></div>
+              <div class="toggle-row" style="border-top: 1px solid var(--rule); padding-top: 14px;">
+                <label class="toggle">
+                  <input type="checkbox" id="trinity-tangent" checked>
+                  <span class="switch"></span>
+                  <span>Tangent line · 切線</span>
+                </label>
+                <label class="toggle">
+                  <input type="checkbox" id="trinity-area" checked>
+                  <span class="switch"></span>
+                  <span>Shaded area · 面積</span>
+                </label>
+              </div>
+            </div>
+            <div class="readout-grid" id="trinity-readout" style="border-top: 1px solid var(--rule);"></div>
+            <div class="math-block">
+              <div class="math-label">Equations of motion · constant a · 等加速度公式</div>
+              <div class="math-display" id="trinity-eqs">
+                $x(t) = x_0 + v_0 t + \tfrac{1}{2} a t^2$<br>
+                $v(t) = v_0 + a t \quad\Rightarrow\quad a(t) = a$
+              </div>
+              <div class="math-label">Calculus links · 微積分連結</div>
+              <div class="math-display" id="trinity-calc">
+                $v = \dfrac{dx}{dt},\quad a = \dfrac{dv}{dt} = \dfrac{d^2 x}{dt^2}$<br>
+                $\Delta x = \int_0^t v\,dt',\quad \Delta v = \int_0^t a\,dt'$
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════ MODULE 2: PROJECTILE ═══════════════════════ -->
+    <section class="module" data-module="projectile">
+      <div class="module-header">
+        <h2 class="module-title">Projectile Motion</h2>
+        <span class="module-subtitle">2D motion · independence of x and y</span>
+      </div>
+      <p class="module-blurb">水平方向沒有力（理想情況下），所以 vₓ 永遠是常數；垂直方向只有 g。<strong>x 跟 y 是兩個獨立的 1D 運動</strong>，唯一耦合的東西是時間。打開 dashed components 直接看見這件事。</p>
+
+      <div class="grid-2col">
+        <div class="stack">
+          <div class="panel">
+            <div class="panel-header">
+              <span class="panel-title">Trajectory <span class="zh">軌跡</span></span>
+              <span class="panel-meta" id="proj-time">t = 0.00 s</span>
+            </div>
+            <div style="padding: 8px;">
+              <canvas id="proj-scene"></canvas>
+            </div>
+          </div>
+
+          <div class="proj-mini-graphs">
+            <div class="mini-graph-card">
+              <div class="trinity-graph-label">
+                <span class="name">x(t) <span class="small">水平位置</span></span>
+                <span class="now-val" style="color: var(--x-c);" id="proj-x-now">0.0 m</span>
+              </div>
+              <canvas id="proj-x-graph"></canvas>
+            </div>
+            <div class="mini-graph-card">
+              <div class="trinity-graph-label">
+                <span class="name">y(t) <span class="small">垂直位置</span></span>
+                <span class="now-val" style="color: var(--x-c);" id="proj-y-now">0.0 m</span>
+              </div>
+              <canvas id="proj-y-graph"></canvas>
+            </div>
+            <div class="mini-graph-card">
+              <div class="trinity-graph-label">
+                <span class="name">v<sub>x</sub>(t) <span class="small">CONSTANT · 不變</span></span>
+                <span class="now-val" style="color: var(--v-c);" id="proj-vx-now">0.0 m/s</span>
+              </div>
+              <canvas id="proj-vx-graph"></canvas>
+            </div>
+            <div class="mini-graph-card">
+              <div class="trinity-graph-label">
+                <span class="name">v<sub>y</sub>(t) <span class="small">LINEAR · 線性</span></span>
+                <span class="now-val" style="color: var(--v-c);" id="proj-vy-now">0.0 m/s</span>
+              </div>
+              <canvas id="proj-vy-graph"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="stack">
+          <div class="panel">
+            <div class="panel-header">
+              <span class="panel-title">Launch <span class="zh">發射控制</span></span>
+            </div>
+            <div class="panel-body" style="display: flex; flex-direction: column; gap: 16px;">
+              <div class="toggle-row">
+                <button class="btn primary" id="proj-play">⏸ Pause</button>
+                <button class="btn" id="proj-fire">↻ Re-fire</button>
+              </div>
+              <div class="params" id="proj-params"></div>
+              <div class="toggle-row" style="border-top: 1px solid var(--rule); padding-top: 14px;">
+                <label class="toggle">
+                  <input type="checkbox" id="proj-components" checked>
+                  <span class="switch"></span>
+                  <span>v<sub>x</sub>, v<sub>y</sub> dashed</span>
+                </label>
+                <label class="toggle">
+                  <input type="checkbox" id="proj-ghost">
+                  <span class="switch"></span>
+                  <span>Complementary 互補角</span>
+                </label>
+                <label class="toggle">
+                  <input type="checkbox" id="proj-grid" checked>
+                  <span class="switch"></span>
+                  <span>Grid · 網格</span>
+                </label>
+              </div>
+            </div>
+            <div class="readout-grid" id="proj-readout" style="border-top: 1px solid var(--rule);"></div>
+            <div class="math-block">
+              <div class="math-label">Equations · 公式</div>
+              <div class="math-display">
+                $x(t) = v_0 \cos\theta \cdot t$<br>
+                $y(t) = h_0 + v_0 \sin\theta \cdot t - \tfrac{1}{2} g t^2$
+              </div>
+              <div class="math-label">Range, max height, time of flight (h<sub>0</sub>=0)</div>
+              <div class="math-display">
+                $R = \dfrac{v_0^2 \sin 2\theta}{g},\;\; H = \dfrac{(v_0 \sin\theta)^2}{2g},\;\; T = \dfrac{2 v_0 \sin\theta}{g}$
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════ MODULE 3: VECTORS ═══════════════════════ -->
+    <section class="module" data-module="vectors">
+      <div class="module-header">
+        <h2 class="module-title">Vector Playground</h2>
+        <span class="module-subtitle">Components · Resultants · Dot &amp; Cross product</span>
+      </div>
+      <p class="module-blurb">拖動 <strong style="color: var(--x-c);">A</strong> 跟 <strong style="color: var(--v-c);">B</strong> 的箭頭尖端。看分量、看合向量、看 dot product 是 |A||B|cos θ，看 cross product magnitude 是 |A||B|sin θ。所有 AP 寫的東西都在右邊讀出。</p>
+
+      <div class="grid-2col">
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-title">Coordinate plane <span class="zh">座標平面</span></span>
+            <span class="panel-meta">drag A, B tips · 拖動箭頭尖端</span>
+          </div>
+          <div style="padding: 8px;">
+            <canvas id="vec-canvas"></canvas>
+          </div>
+        </div>
+
+        <div class="stack">
+          <div class="panel">
+            <div class="panel-header">
+              <span class="panel-title">Operations <span class="zh">運算</span></span>
+            </div>
+            <div class="panel-body" style="display: flex; flex-direction: column; gap: 14px;">
+              <div class="toggle-row">
+                <span style="font-size: 11px; color: var(--ink-faint); letter-spacing: 0.06em; text-transform: uppercase;">Show:</span>
+                <label class="toggle">
+                  <input type="checkbox" id="vec-sum" checked>
+                  <span class="switch"></span>
+                  <span>A + B</span>
+                </label>
+                <label class="toggle">
+                  <input type="checkbox" id="vec-diff">
+                  <span class="switch"></span>
+                  <span>A − B</span>
+                </label>
+              </div>
+              <div class="toggle-row">
+                <label class="toggle">
+                  <input type="checkbox" id="vec-components" checked>
+                  <span class="switch"></span>
+                  <span>Components · 分量</span>
+                </label>
+                <label class="toggle">
+                  <input type="checkbox" id="vec-parallelogram">
+                  <span class="switch"></span>
+                  <span>Parallelogram · 平行四邊形法</span>
+                </label>
+                <label class="toggle">
+                  <input type="checkbox" id="vec-angle" checked>
+                  <span class="switch"></span>
+                  <span>Angle θ · 夾角</span>
+                </label>
+              </div>
+            </div>
+            <div class="readout-grid" id="vec-readout" style="border-top: 1px solid var(--rule);"></div>
+            <div class="math-block">
+              <div class="math-label">Identities · 恆等式</div>
+              <div class="math-display">
+                $\vec{A}\cdot\vec{B} = A_x B_x + A_y B_y = |A||B|\cos\theta$<br>
+                $|\vec{A}\times\vec{B}| = |A_x B_y - A_y B_x| = |A||B|\sin\theta$
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="pillars">
+      <span class="pillar x">x · 位置</span>
+      <span class="pillar v">v · 速度</span>
+      <span class="pillar a">a · 加速度</span>
+      <span class="pillar r">resultant · 合向量</span>
+      <span class="pillar g">g · 重力</span>
+    </div>
+    <span>g = 9.81 m/s² · constant unless noted</span>
+  </footer>
+</div>
+
+<script>
+// =============================================================================
+// Kinematics Panorama — single-file vanilla JS
+// =============================================================================
+
+const G = 9.81;
+
+const C = {
+  paper: '#EEE6D6',
+  paperLight: '#F5EFE1',
+  paperWarm: '#E5DAC0',
+  paperDeep: '#D7CAA6',
+  ink: '#1A1612',
+  inkSoft: '#44382D',
+  inkMid: '#6B5F4E',
+  inkFaint: '#968A72',
+  rule: '#CFC4A8',
+  ruleStrong: '#A89A7C',
+  x: '#1F3F6E',
+  v: '#B65331',
+  a: '#2E5E3F',
+  vec: '#6B3866',
+  grav: '#8C2E2A',
+  highlight: '#F0DCA4',
+  shadedV: 'rgba(182, 83, 49, 0.18)',
+  shadedA: 'rgba(46, 94, 63, 0.20)',
+  shadedX: 'rgba(31, 63, 110, 0.14)',
+  grid: 'rgba(80, 60, 30, 0.08)',
+  gridStrong: 'rgba(80, 60, 30, 0.18)',
+};
+
+// ── Shared canvas helpers ──────────────────────────────────────────────────
+function setupHiDPI(canvas) {
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  const w = Math.max(1, Math.floor(rect.width));
+  const h = Math.max(1, Math.floor(rect.height));
+  if (canvas.width !== w * dpr || canvas.height !== h * dpr) {
+    canvas.width = w * dpr;
+    canvas.height = h * dpr;
+  }
+  const ctx = canvas.getContext('2d');
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  return { ctx, w, h };
+}
+
+function drawArrow(ctx, x1, y1, x2, y2, color, opts = {}) {
+  const lw = opts.lineWidth ?? 2;
+  const headSize = opts.headSize ?? 8;
+  const dashed = opts.dashed ?? false;
+  ctx.save();
+  ctx.strokeStyle = color; ctx.fillStyle = color;
+  ctx.lineWidth = lw;
+  if (dashed) ctx.setLineDash([5, 4]);
+  ctx.beginPath();
+  ctx.moveTo(x1, y1); ctx.lineTo(x2, y2);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  // head
+  const ang = Math.atan2(y2 - y1, x2 - x1);
+  const dist = Math.hypot(x2 - x1, y2 - y1);
+  if (dist > headSize * 0.5) {
+    ctx.beginPath();
+    ctx.moveTo(x2, y2);
+    ctx.lineTo(x2 - headSize * Math.cos(ang - Math.PI/6), y2 - headSize * Math.sin(ang - Math.PI/6));
+    ctx.lineTo(x2 - headSize * Math.cos(ang + Math.PI/6), y2 - headSize * Math.sin(ang + Math.PI/6));
+    ctx.closePath();
+    ctx.fill();
+  }
+  if (opts.label) {
+    ctx.font = opts.labelFont ?? 'italic 600 12px Fraunces, serif';
+    ctx.fillStyle = opts.labelColor ?? color;
+    const off = opts.labelOffset ?? 8;
+    const lx = x2 + off * Math.cos(ang) + (-Math.sin(ang) * 6);
+    const ly = y2 + off * Math.sin(ang) + (Math.cos(ang) * 6);
+    ctx.textAlign = 'left';
+    ctx.fillText(opts.label, lx, ly);
+  }
+  ctx.restore();
+}
+
+function drawAxes(ctx, w, h, opts = {}) {
+  const padL = opts.padL ?? 36;
+  const padR = opts.padR ?? 16;
+  const padT = opts.padT ?? 14;
+  const padB = opts.padB ?? 28;
+  const xMin = opts.xMin, xMax = opts.xMax;
+  const yMin = opts.yMin, yMax = opts.yMax;
+  const xLabel = opts.xLabel ?? '';
+  const yLabel = opts.yLabel ?? '';
+  const xUnit = opts.xUnit ?? '';
+  const yUnit = opts.yUnit ?? '';
+  const plotW = w - padL - padR;
+  const plotH = h - padT - padB;
+
+  const xToPx = x => padL + (x - xMin) / (xMax - xMin) * plotW;
+  const yToPx = y => padT + plotH - (y - yMin) / (yMax - yMin) * plotH;
+  const pxToX = px => xMin + (px - padL) / plotW * (xMax - xMin);
+
+  // Grid
+  const xTicks = opts.xTicks ?? 8;
+  const yTicks = opts.yTicks ?? 4;
+  ctx.save();
+  ctx.strokeStyle = C.grid;
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  for (let i = 0; i <= xTicks; i++) {
+    const x = padL + plotW * i / xTicks + 0.5;
+    ctx.moveTo(x, padT); ctx.lineTo(x, h - padB);
+  }
+  for (let j = 0; j <= yTicks; j++) {
+    const y = padT + plotH * j / yTicks + 0.5;
+    ctx.moveTo(padL, y); ctx.lineTo(w - padR, y);
+  }
+  ctx.stroke();
+
+  // Axes (x-axis at y=0 if visible, else bottom; y-axis at x=0 if visible, else left)
+  ctx.strokeStyle = C.ruleStrong;
+  ctx.lineWidth = 1.2;
+  // x-axis (y = 0)
+  let axisY;
+  if (yMin <= 0 && yMax >= 0) axisY = yToPx(0);
+  else axisY = h - padB;
+  ctx.beginPath();
+  ctx.moveTo(padL, axisY); ctx.lineTo(w - padR, axisY);
+  ctx.stroke();
+  // y-axis (x = 0)
+  let axisX;
+  if (xMin <= 0 && xMax >= 0) axisX = xToPx(0);
+  else axisX = padL;
+  ctx.beginPath();
+  ctx.moveTo(axisX, padT); ctx.lineTo(axisX, h - padB);
+  ctx.stroke();
+
+  // Tick labels
+  ctx.fillStyle = C.inkFaint;
+  ctx.font = '10px JetBrains Mono, monospace';
+  ctx.textAlign = 'center';
+  // x ticks (only show end labels)
+  ctx.fillText(`${xMin.toFixed(opts.xDecimals ?? 0)}${xUnit}`, padL, h - padB + 14);
+  ctx.fillText(`${xMax.toFixed(opts.xDecimals ?? 0)}${xUnit}`, w - padR, h - padB + 14);
+  // y ticks
+  ctx.textAlign = 'right';
+  ctx.fillText(`${yMax.toFixed(opts.yDecimals ?? 1)}`, padL - 4, padT + 4);
+  ctx.fillText(`${yMin.toFixed(opts.yDecimals ?? 1)}`, padL - 4, h - padB);
+  if (yMin <= 0 && yMax >= 0) {
+    ctx.fillText('0', padL - 4, axisY + 3);
+  }
+
+  // Axis labels
+  ctx.fillStyle = C.inkMid;
+  ctx.font = 'italic 11px Fraunces, serif';
+  ctx.textAlign = 'right';
+  ctx.fillText(xLabel, w - padR, h - padB + 25);
+  ctx.textAlign = 'left';
+  ctx.fillText(yLabel, padL + 2, padT - 4);
+  ctx.restore();
+
+  return { padL, padR, padT, padB, plotW, plotH, xToPx, yToPx, pxToX, axisX, axisY };
+}
+
+// =============================================================================
+// MODULE 1 — Kinematic Trinity
+// =============================================================================
+
+const Trinity = {
+  state: {
+    x0: 0, v0: 8, a: -2,
+    tMax: 10, tNow: 0, dt: 0.02,
+    playing: false,
+    showTangent: true,
+    showArea: true,
+    dragging: null,
+  },
+  graphs: ['x', 'v', 'a'],
+  // Computed at given t
+  x(t) { return this.state.x0 + this.state.v0 * t + 0.5 * this.state.a * t * t; },
+  v(t) { return this.state.v0 + this.state.a * t; },
+  aFn(t) { return this.state.a; },
+
+  ranges() {
+    // Auto-compute reasonable y-ranges
+    const T = this.state.tMax;
+    const xs = []; const vs = []; const as = [];
+    const N = 100;
+    for (let i = 0; i <= N; i++) {
+      const t = T * i / N;
+      xs.push(this.x(t)); vs.push(this.v(t)); as.push(this.aFn(t));
+    }
+    // x range: include 0
+    let xMin = Math.min(...xs, 0);
+    let xMax = Math.max(...xs, 0);
+    if (xMax - xMin < 5) { const c = (xMax+xMin)/2; xMin = c-3; xMax = c+3; }
+    let vMin = Math.min(...vs, 0);
+    let vMax = Math.max(...vs, 0);
+    if (vMax - vMin < 4) { const c = (vMax+vMin)/2; vMin = c-3; vMax = c+3; }
+    let aMin = Math.min(...as, 0);
+    let aMax = Math.max(...as, 0);
+    if (aMax - aMin < 2) { const c = (aMax+aMin)/2; aMin = c-2; aMax = c+2; }
+    // Add 10% padding
+    const pad = (a, b) => { const r = (b-a)*0.1; return [a-r, b+r]; };
+    [xMin, xMax] = pad(xMin, xMax);
+    [vMin, vMax] = pad(vMin, vMax);
+    [aMin, aMax] = pad(aMin, aMax);
+    return { x: [xMin, xMax], v: [vMin, vMax], a: [aMin, aMax] };
+  },
+
+  init() {
+    // Render param sliders
+    const params = [
+      { id: 'x0', label: 'x₀', desc: 'initial position · 初始位置', unit: 'm', min: -10, max: 10, step: 0.5,
+        get: () => this.state.x0, set: v => { this.state.x0 = v; } },
+      { id: 'v0', label: 'v₀', desc: 'initial velocity · 初速', unit: 'm/s', min: -15, max: 15, step: 0.5,
+        get: () => this.state.v0, set: v => { this.state.v0 = v; } },
+      { id: 'a', label: 'a', desc: 'acceleration · 加速度', unit: 'm/s²', min: -10, max: 10, step: 0.2,
+        get: () => this.state.a, set: v => { this.state.a = v; } },
+    ];
+    renderSliders(document.getElementById('trinity-params'), params, ['x0','v0','a'], { v0:'v-color', a:'a-color' });
+    // Readouts
+    document.getElementById('trinity-readout').innerHTML = `
+      <div class="readout-item"><div class="readout-label">x · 位置</div><div class="readout-value" id="t-ro-x">—<span class="unit">m</span></div></div>
+      <div class="readout-item"><div class="readout-label">v · 速度</div><div class="readout-value" id="t-ro-v">—<span class="unit">m/s</span></div></div>
+      <div class="readout-item"><div class="readout-label">a · 加速度</div><div class="readout-value" id="t-ro-a">—<span class="unit">m/s²</span></div></div>
+      <div class="readout-item"><div class="readout-label">Δx 至今</div><div class="readout-value" id="t-ro-dx">—<span class="unit">m</span></div></div>
+      <div class="readout-item"><div class="readout-label">Δv 至今</div><div class="readout-value" id="t-ro-dv">—<span class="unit">m/s</span></div></div>
+    `;
+    // Wire up
+    document.getElementById('trinity-play').addEventListener('click', () => {
+      this.state.playing = !this.state.playing;
+      document.getElementById('trinity-play').textContent = this.state.playing ? '⏸ Animate t' : '▶ Animate t';
+      document.getElementById('trinity-play').classList.toggle('primary', !this.state.playing);
+    });
+    document.getElementById('trinity-rewind').addEventListener('click', () => { this.state.tNow = 0; });
+    document.getElementById('trinity-tangent').addEventListener('change', e => { this.state.showTangent = e.target.checked; });
+    document.getElementById('trinity-area').addEventListener('change', e => { this.state.showArea = e.target.checked; });
+    // Mouse interaction on graphs
+    for (const which of this.graphs) {
+      const canvas = document.getElementById('trinity-' + which);
+      const handler = e => this._onGraphPointer(e, canvas);
+      canvas.addEventListener('mousedown', e => { this.state.dragging = which; this.state.playing = false; document.getElementById('trinity-play').textContent = '▶ Animate t'; document.getElementById('trinity-play').classList.add('primary'); handler(e); });
+      canvas.addEventListener('touchstart', e => { e.preventDefault(); this.state.dragging = which; this.state.playing = false; document.getElementById('trinity-play').textContent = '▶ Animate t'; document.getElementById('trinity-play').classList.add('primary'); handler(e.touches[0]); }, { passive: false });
+    }
+    window.addEventListener('mousemove', e => { if (this.state.dragging) this._onGraphPointer(e, document.getElementById('trinity-' + this.state.dragging)); });
+    window.addEventListener('touchmove', e => { if (this.state.dragging) { this._onGraphPointer(e.touches[0], document.getElementById('trinity-' + this.state.dragging)); e.preventDefault(); } }, { passive: false });
+    window.addEventListener('mouseup', () => { this.state.dragging = null; });
+    window.addEventListener('touchend', () => { this.state.dragging = null; });
+  },
+
+  _onGraphPointer(e, canvas) {
+    const rect = canvas.getBoundingClientRect();
+    const px = e.clientX - rect.left;
+    // Time axis: 0 to tMax across plot (need padL/plotW from drawAxes)
+    // We know the layout: padL = 36, padR = 16, plotW = rect.width - 52
+    const padL = 36;
+    const plotW = rect.width - 36 - 16;
+    const t = Math.max(0, Math.min(this.state.tMax, (px - padL) / plotW * this.state.tMax));
+    this.state.tNow = t;
+  },
+
+  update(dt) {
+    if (this.state.playing && !this.state.dragging) {
+      this.state.tNow += dt;
+      if (this.state.tNow > this.state.tMax) this.state.tNow = 0;
+    }
+  },
+
+  render() {
+    // Update readouts
+    const t = this.state.tNow;
+    const xNow = this.x(t), vNow = this.v(t), aNow = this.aFn(t);
+    document.getElementById('trinity-time').textContent = `t = ${t.toFixed(2)} s`;
+    document.getElementById('trinity-x-now').textContent = `x = ${xNow.toFixed(2)} m`;
+    document.getElementById('trinity-v-now').textContent = `v = ${vNow.toFixed(2)} m/s`;
+    document.getElementById('trinity-a-now').textContent = `a = ${aNow.toFixed(2)} m/s²`;
+    document.getElementById('t-ro-x').innerHTML = `${xNow.toFixed(2)}<span class="unit">m</span>`;
+    document.getElementById('t-ro-v').innerHTML = `${vNow.toFixed(2)}<span class="unit">m/s</span>`;
+    document.getElementById('t-ro-a').innerHTML = `${aNow.toFixed(2)}<span class="unit">m/s²</span>`;
+    document.getElementById('t-ro-dx').innerHTML = `${(xNow - this.state.x0).toFixed(2)}<span class="unit">m</span>`;
+    document.getElementById('t-ro-dv').innerHTML = `${(vNow - this.state.v0).toFixed(2)}<span class="unit">m/s</span>`;
+
+    this._drawParticle();
+    const ranges = this.ranges();
+    this._drawTimeGraph('trinity-x', t => this.x(t), ranges.x, C.x, 'x', 'm', { showTangent: this.state.showTangent, tangentDeriv: t => this.v(t) });
+    this._drawTimeGraph('trinity-v', t => this.v(t), ranges.v, C.v, 'v', 'm/s', { showTangent: this.state.showTangent, tangentDeriv: t => this.aFn(t), shaded: this.state.showArea, shadedColor: C.shadedV, shadedLabel: 'Δx = ∫v dt' });
+    this._drawTimeGraph('trinity-a', t => this.aFn(t), ranges.a, C.a, 'a', 'm/s²', { shaded: this.state.showArea, shadedColor: C.shadedA, shadedLabel: 'Δv = ∫a dt' });
+  },
+
+  _drawParticle() {
+    const canvas = document.getElementById('trinity-particle');
+    const { ctx, w, h } = setupHiDPI(canvas);
+    ctx.clearRect(0, 0, w, h);
+    const ranges = this.ranges();
+    const [xMin, xMax] = ranges.x;
+    const padL = 30, padR = 30;
+    const plotW = w - padL - padR;
+    const cy = h / 2;
+    // Track
+    ctx.strokeStyle = C.ruleStrong;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(padL, cy); ctx.lineTo(w - padR, cy);
+    ctx.stroke();
+    // Tick marks
+    ctx.fillStyle = C.inkFaint;
+    ctx.font = '10px JetBrains Mono, monospace';
+    ctx.textAlign = 'center';
+    const span = xMax - xMin;
+    const tickStep = niceStep(span / 8);
+    const firstTick = Math.ceil(xMin / tickStep) * tickStep;
+    for (let xv = firstTick; xv <= xMax; xv += tickStep) {
+      const px = padL + (xv - xMin) / span * plotW;
+      ctx.strokeStyle = C.rule;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(px, cy - 5); ctx.lineTo(px, cy + 5);
+      ctx.stroke();
+      ctx.fillText(xv.toFixed(0), px, cy + 22);
+    }
+    // Origin marker
+    if (xMin <= 0 && xMax >= 0) {
+      const ox = padL + (-xMin) / span * plotW;
+      ctx.strokeStyle = C.ruleStrong;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(ox, cy - 9); ctx.lineTo(ox, cy + 9); ctx.stroke();
+      ctx.fillStyle = C.inkMid;
+      ctx.font = 'italic 11px Fraunces, serif';
+      ctx.fillText('0', ox, cy + 22);
+    }
+    // Particle
+    const xv = this.x(this.state.tNow);
+    const px = padL + (xv - xMin) / span * plotW;
+    ctx.fillStyle = C.x;
+    ctx.shadowColor = 'rgba(31, 63, 110, 0.4)';
+    ctx.shadowBlur = 8;
+    ctx.beginPath(); ctx.arc(px, cy, 9, 0, Math.PI*2); ctx.fill();
+    ctx.shadowBlur = 0;
+    // velocity arrow
+    const vNow = this.v(this.state.tNow);
+    if (Math.abs(vNow) > 0.05) {
+      const vScale = plotW / span * 0.5; // 0.5s of motion shown
+      drawArrow(ctx, px, cy - 18, px + vNow * vScale, cy - 18, C.v, { label: 'v', headSize: 7 });
+    }
+    // acceleration arrow
+    const aNow = this.aFn(this.state.tNow);
+    if (Math.abs(aNow) > 0.05) {
+      const aScale = plotW / span * 0.3;
+      drawArrow(ctx, px, cy + 18, px + aNow * aScale, cy + 18, C.a, { label: 'a', headSize: 7 });
+    }
+    // Time label
+    ctx.fillStyle = C.inkMid;
+    ctx.font = '11px JetBrains Mono, monospace';
+    ctx.textAlign = 'left';
+    ctx.fillText(`t = ${this.state.tNow.toFixed(2)} s`, padL, 18);
+    ctx.textAlign = 'right';
+    ctx.fillText(`x = ${xv.toFixed(2)} m`, w - padR, 18);
+  },
+
+  _drawTimeGraph(canvasId, fn, yRange, color, yLabel, yUnit, opts = {}) {
+    const canvas = document.getElementById(canvasId);
+    const { ctx, w, h } = setupHiDPI(canvas);
+    ctx.fillStyle = C.paperLight;
+    ctx.fillRect(0, 0, w, h);
+    const ax = drawAxes(ctx, w, h, {
+      xMin: 0, xMax: this.state.tMax,
+      yMin: yRange[0], yMax: yRange[1],
+      xLabel: 't (s)', yLabel: `${yLabel} (${yUnit})`,
+      xDecimals: 0, yDecimals: 1,
+      xTicks: 10, yTicks: 4,
+    });
+
+    // Shaded area (integral from 0 to tNow)
+    if (opts.shaded && this.state.tNow > 0.01) {
+      ctx.fillStyle = opts.shadedColor;
+      ctx.beginPath();
+      const N = 80;
+      const tEnd = this.state.tNow;
+      ctx.moveTo(ax.xToPx(0), ax.axisY);
+      for (let i = 0; i <= N; i++) {
+        const t = tEnd * i / N;
+        ctx.lineTo(ax.xToPx(t), ax.yToPx(fn(t)));
+      }
+      ctx.lineTo(ax.xToPx(tEnd), ax.axisY);
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    // Curve
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    const N = 200;
+    for (let i = 0; i <= N; i++) {
+      const t = this.state.tMax * i / N;
+      const px = ax.xToPx(t);
+      const py = ax.yToPx(fn(t));
+      if (i === 0) ctx.moveTo(px, py);
+      else ctx.lineTo(px, py);
+    }
+    ctx.stroke();
+
+    // Scrubber line
+    const tNow = this.state.tNow;
+    const scrubX = ax.xToPx(tNow);
+    ctx.strokeStyle = C.ink;
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 3]);
+    ctx.beginPath();
+    ctx.moveTo(scrubX, ax.padT); ctx.lineTo(scrubX, h - ax.padB);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Current point dot
+    const yNow = fn(tNow);
+    const pxNow = scrubX;
+    const pyNow = ax.yToPx(yNow);
+    ctx.fillStyle = color;
+    ctx.beginPath(); ctx.arc(pxNow, pyNow, 5, 0, Math.PI*2); ctx.fill();
+    ctx.strokeStyle = C.paperLight;
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(pxNow, pyNow, 5, 0, Math.PI*2); ctx.stroke();
+
+    // Tangent line
+    if (opts.showTangent && opts.tangentDeriv) {
+      const slope = opts.tangentDeriv(tNow);
+      // Draw a short tangent line: ±0.7s in t
+      const dt = 0.8;
+      const t1 = tNow - dt, t2 = tNow + dt;
+      const y1 = yNow + slope * (-dt);
+      const y2 = yNow + slope * dt;
+      ctx.strokeStyle = C.ink;
+      ctx.lineWidth = 1.8;
+      ctx.beginPath();
+      ctx.moveTo(ax.xToPx(t1), ax.yToPx(y1));
+      ctx.lineTo(ax.xToPx(t2), ax.yToPx(y2));
+      ctx.stroke();
+      // Slope label
+      ctx.fillStyle = C.ink;
+      ctx.font = 'italic 11px Fraunces, serif';
+      ctx.textAlign = 'left';
+      const labelText = `slope = ${slope.toFixed(2)}`;
+      const lx = ax.xToPx(t2) + 4;
+      const ly = ax.yToPx(y2);
+      // background pill
+      const tw = ctx.measureText(labelText).width;
+      ctx.fillStyle = 'rgba(245, 239, 225, 0.92)';
+      ctx.fillRect(lx - 3, ly - 11, tw + 6, 16);
+      ctx.fillStyle = C.ink;
+      ctx.fillText(labelText, lx, ly + 1);
+    }
+
+    // Shaded area label
+    if (opts.shaded && opts.shadedLabel && tNow > 0.5) {
+      ctx.fillStyle = C.inkSoft;
+      ctx.font = 'italic 11px Fraunces, serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(opts.shadedLabel, ax.xToPx(tNow * 0.05) + 4, ax.yToPx(0) + (yRange[1] > 0 && yRange[0] < 0 ? -6 : -8));
+    }
+
+    // tNow label
+    ctx.fillStyle = C.inkMid;
+    ctx.font = '10px JetBrains Mono, monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText(`t = ${tNow.toFixed(2)}`, scrubX, h - ax.padB + 25);
+  },
+};
+
+function niceStep(rawStep) {
+  const exp = Math.floor(Math.log10(rawStep));
+  const f = rawStep / Math.pow(10, exp);
+  let nice;
+  if (f < 1.5) nice = 1;
+  else if (f < 3) nice = 2;
+  else if (f < 7) nice = 5;
+  else nice = 10;
+  return nice * Math.pow(10, exp);
+}
+
+// =============================================================================
+// MODULE 2 — Projectile Motion
+// =============================================================================
+
+const Projectile = {
+  state: {
+    v0: 30, theta: 45, h0: 5, g: 9.81,
+    t: 0, dt: 0.02, playing: true,
+    showComponents: true,
+    showGhost: false,
+    showGrid: true,
+    trail: [],
+    ghostTrail: [],
+  },
+
+  // Compute
+  vx() { return this.state.v0 * Math.cos(this.state.theta * Math.PI / 180); },
+  vy0() { return this.state.v0 * Math.sin(this.state.theta * Math.PI / 180); },
+  x(t) { return this.vx() * t; },
+  y(t) { return this.state.h0 + this.vy0() * t - 0.5 * this.state.g * t * t; },
+  vyT(t) { return this.vy0() - this.state.g * t; },
+
+  flightTime() {
+    // y(t) = 0 -> h0 + vy0*t - 0.5*g*t^2 = 0
+    const a = -0.5 * this.state.g, b = this.vy0(), c = this.state.h0;
+    const disc = b*b - 4*a*c;
+    if (disc < 0) return 0;
+    return (-b - Math.sqrt(disc)) / (2*a);
+  },
+  range() { return this.x(this.flightTime()); },
+  maxHeight() {
+    const tApex = this.vy0() / this.state.g;
+    if (tApex < 0) return this.state.h0;
+    return this.y(tApex);
+  },
+
+  init() {
+    const params = [
+      { id: 'v0', label: 'v₀', desc: 'launch speed · 初速', unit: 'm/s', min: 5, max: 60, step: 1,
+        get: () => this.state.v0, set: v => { this.state.v0 = v; this.fire(); } },
+      { id: 'theta', label: 'θ', desc: 'launch angle · 仰角', unit: '°', min: 5, max: 85, step: 1,
+        get: () => this.state.theta, set: v => { this.state.theta = v; this.fire(); } },
+      { id: 'h0', label: 'h₀', desc: 'launch height · 起射高度', unit: 'm', min: 0, max: 50, step: 1,
+        get: () => this.state.h0, set: v => { this.state.h0 = v; this.fire(); } },
+      { id: 'g', label: 'g', desc: 'gravity · 重力', unit: 'm/s²', min: 1.62, max: 24.79, step: 0.1,
+        get: () => this.state.g, set: v => { this.state.g = v; this.fire(); } },
+    ];
+    renderSliders(document.getElementById('proj-params'), params, ['v0','theta','h0','g'], { theta: 'a-color', h0: 'v-color' });
+    document.getElementById('proj-readout').innerHTML = `
+      <div class="readout-item"><div class="readout-label">Range R · 射程</div><div class="readout-value" id="p-ro-r">—<span class="unit">m</span></div></div>
+      <div class="readout-item"><div class="readout-label">Max H · 最高</div><div class="readout-value" id="p-ro-h">—<span class="unit">m</span></div></div>
+      <div class="readout-item"><div class="readout-label">Flight T · 飛行</div><div class="readout-value" id="p-ro-t">—<span class="unit">s</span></div></div>
+      <div class="readout-item"><div class="readout-label">|v| now</div><div class="readout-value" id="p-ro-v">—<span class="unit">m/s</span></div></div>
+      <div class="readout-item"><div class="readout-label">v<sub>x</sub></div><div class="readout-value" id="p-ro-vx">—<span class="unit">m/s</span></div></div>
+      <div class="readout-item"><div class="readout-label">v<sub>y</sub></div><div class="readout-value" id="p-ro-vy">—<span class="unit">m/s</span></div></div>
+    `;
+    document.getElementById('proj-play').addEventListener('click', () => {
+      this.state.playing = !this.state.playing;
+      document.getElementById('proj-play').textContent = this.state.playing ? '⏸ Pause' : '▶ Play';
+      document.getElementById('proj-play').classList.toggle('primary', !this.state.playing);
+    });
+    document.getElementById('proj-fire').addEventListener('click', () => this.fire(true));
+    document.getElementById('proj-components').addEventListener('change', e => { this.state.showComponents = e.target.checked; });
+    document.getElementById('proj-ghost').addEventListener('change', e => { this.state.showGhost = e.target.checked; this._buildGhostTrail(); });
+    document.getElementById('proj-grid').addEventListener('change', e => { this.state.showGrid = e.target.checked; });
+    this.fire(true);
+  },
+
+  fire(forcePlay = false) {
+    this.state.t = 0;
+    this.state.trail = [];
+    if (this.state.showGhost) this._buildGhostTrail();
+    if (forcePlay) {
+      this.state.playing = true;
+      document.getElementById('proj-play').textContent = '⏸ Pause';
+      document.getElementById('proj-play').classList.remove('primary');
+    }
+  },
+
+  _buildGhostTrail() {
+    this.state.ghostTrail = [];
+    if (!this.state.showGhost) return;
+    const compTheta = 90 - this.state.theta;
+    const ct = Math.cos(compTheta * Math.PI / 180);
+    const st = Math.sin(compTheta * Math.PI / 180);
+    const v0 = this.state.v0, h0 = this.state.h0, g = this.state.g;
+    // flight time
+    const a = -0.5*g, b = v0*st, c = h0;
+    const disc = b*b - 4*a*c;
+    if (disc < 0) return;
+    const T = (-b - Math.sqrt(disc)) / (2*a);
+    const N = 60;
+    for (let i = 0; i <= N; i++) {
+      const t = T * i / N;
+      this.state.ghostTrail.push({ x: v0 * ct * t, y: h0 + v0 * st * t - 0.5 * g * t * t });
+    }
+  },
+
+  update(dt) {
+    if (!this.state.playing) return;
+    this.state.t += dt;
+    const T = this.flightTime();
+    if (this.state.t > T + 0.5) {
+      this.state.t = 0;
+      this.state.trail = [];
+    }
+    if (this.state.t <= T) {
+      this.state.trail.push({ x: this.x(this.state.t), y: this.y(this.state.t) });
+      if (this.state.trail.length > 400) this.state.trail.shift();
+    }
+  },
+
+  render() {
+    const t = Math.min(this.state.t, this.flightTime());
+    const x = this.x(t), y = this.y(t);
+    const vx = this.vx(), vy = this.vyT(t);
+    const speed = Math.hypot(vx, vy);
+    document.getElementById('proj-time').textContent = `t = ${t.toFixed(2)} s`;
+    document.getElementById('p-ro-r').innerHTML = `${this.range().toFixed(1)}<span class="unit">m</span>`;
+    document.getElementById('p-ro-h').innerHTML = `${this.maxHeight().toFixed(1)}<span class="unit">m</span>`;
+    document.getElementById('p-ro-t').innerHTML = `${this.flightTime().toFixed(2)}<span class="unit">s</span>`;
+    document.getElementById('p-ro-v').innerHTML = `${speed.toFixed(1)}<span class="unit">m/s</span>`;
+    document.getElementById('p-ro-vx').innerHTML = `${vx.toFixed(1)}<span class="unit">m/s</span>`;
+    document.getElementById('p-ro-vy').innerHTML = `${vy.toFixed(1)}<span class="unit">m/s</span>`;
+    document.getElementById('proj-x-now').textContent = `${x.toFixed(1)} m`;
+    document.getElementById('proj-y-now').textContent = `${y.toFixed(1)} m`;
+    document.getElementById('proj-vx-now').textContent = `${vx.toFixed(1)} m/s`;
+    document.getElementById('proj-vy-now').textContent = `${vy.toFixed(1)} m/s`;
+
+    this._drawScene();
+    this._drawMiniGraphs();
+  },
+
+  _drawScene() {
+    const canvas = document.getElementById('proj-scene');
+    const { ctx, w, h } = setupHiDPI(canvas);
+    ctx.fillStyle = C.paperLight; ctx.fillRect(0, 0, w, h);
+
+    // Current state — needed by particle drawing below
+    const t = Math.min(this.state.t, this.flightTime());
+    const x = this.x(t), y = this.y(t);
+    const vx = this.vx(), vy = this.vyT(t);
+
+    // Determine world extents
+    const R = this.range();
+    const H = this.maxHeight();
+    const ghostMaxX = this.state.showGhost && this.state.ghostTrail.length > 0 ? Math.max(...this.state.ghostTrail.map(p => p.x)) : 0;
+    const ghostMaxY = this.state.showGhost && this.state.ghostTrail.length > 0 ? Math.max(...this.state.ghostTrail.map(p => p.y)) : 0;
+    const xMax = Math.max(R, ghostMaxX, 10) * 1.08;
+    const yMax = Math.max(H, ghostMaxY, this.state.h0 + 5) * 1.15;
+    const padL = 36, padR = 18, padT = 16, padB = 30;
+    const plotW = w - padL - padR;
+    const plotH = h - padT - padB;
+    const xToPx = x => padL + (x / xMax) * plotW;
+    const yToPx = y => padT + plotH - (y / yMax) * plotH;
+    const groundY = yToPx(0);
+
+    // Grid
+    if (this.state.showGrid) {
+      ctx.strokeStyle = C.grid; ctx.lineWidth = 1;
+      const xStep = niceStep(xMax / 10);
+      for (let xv = 0; xv <= xMax; xv += xStep) {
+        const px = xToPx(xv);
+        ctx.beginPath(); ctx.moveTo(px, padT); ctx.lineTo(px, groundY); ctx.stroke();
+      }
+      const yStep = niceStep(yMax / 6);
+      for (let yv = 0; yv <= yMax; yv += yStep) {
+        const py = yToPx(yv);
+        ctx.beginPath(); ctx.moveTo(padL, py); ctx.lineTo(w - padR, py); ctx.stroke();
+      }
+    }
+
+    // Ground
+    ctx.strokeStyle = C.ruleStrong;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(padL, groundY); ctx.lineTo(w - padR, groundY); ctx.stroke();
+    // Ground hatching
+    ctx.strokeStyle = C.ruleStrong; ctx.lineWidth = 1;
+    for (let x = padL; x < w - padR; x += 10) {
+      ctx.beginPath(); ctx.moveTo(x, groundY + 1); ctx.lineTo(x - 6, groundY + 7); ctx.stroke();
+    }
+
+    // Axis labels
+    ctx.fillStyle = C.inkFaint;
+    ctx.font = '10px JetBrains Mono, monospace';
+    ctx.textAlign = 'right';
+    ctx.fillText(`${xMax.toFixed(0)} m`, w - padR, groundY + 16);
+    ctx.textAlign = 'left';
+    ctx.fillText('0', padL, groundY + 16);
+    ctx.textAlign = 'right';
+    ctx.fillText(`${yMax.toFixed(0)} m`, padL - 4, padT + 10);
+
+    // Ghost trail
+    if (this.state.showGhost && this.state.ghostTrail.length > 1) {
+      ctx.strokeStyle = C.inkFaint;
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      this.state.ghostTrail.forEach((p, i) => {
+        const px = xToPx(p.x), py = yToPx(p.y);
+        if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+      });
+      ctx.stroke();
+      ctx.setLineDash([]);
+      // Label
+      ctx.fillStyle = C.inkMid;
+      ctx.font = 'italic 10px Fraunces, serif';
+      ctx.textAlign = 'center';
+      const last = this.state.ghostTrail[this.state.ghostTrail.length - 1];
+      ctx.fillText(`θ = ${(90-this.state.theta).toFixed(0)}°`, xToPx(last.x * 0.5), yToPx(Math.max(...this.state.ghostTrail.map(p=>p.y))) - 4);
+    }
+
+    // Trail
+    if (this.state.trail.length > 1) {
+      ctx.strokeStyle = C.x;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      this.state.trail.forEach((p, i) => {
+        const px = xToPx(p.x), py = yToPx(p.y);
+        if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+      });
+      ctx.stroke();
+    }
+
+    // Cannon / launcher at origin
+    const cx0 = xToPx(0), cy0 = yToPx(this.state.h0);
+    if (this.state.h0 > 0.5) {
+      // Pillar
+      ctx.fillStyle = C.paperWarm;
+      ctx.strokeStyle = C.ruleStrong;
+      ctx.lineWidth = 1;
+      ctx.fillRect(cx0 - 8, cy0, 16, groundY - cy0);
+      ctx.strokeRect(cx0 - 8, cy0, 16, groundY - cy0);
+    }
+    // Cannon angle indicator
+    const cannonLen = 28;
+    const ang = this.state.theta * Math.PI / 180;
+    ctx.strokeStyle = C.inkSoft; ctx.lineWidth = 4; ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(cx0, cy0); ctx.lineTo(cx0 + cannonLen * Math.cos(ang), cy0 - cannonLen * Math.sin(ang));
+    ctx.stroke();
+    ctx.lineCap = 'butt';
+    // Cannon base
+    ctx.fillStyle = C.inkSoft;
+    ctx.beginPath(); ctx.arc(cx0, cy0, 5, 0, Math.PI*2); ctx.fill();
+
+    // Particle
+    const px = xToPx(x), py = yToPx(y);
+    if (t < this.flightTime() + 0.1) {
+      ctx.fillStyle = C.x;
+      ctx.shadowColor = 'rgba(31, 63, 110, 0.4)';
+      ctx.shadowBlur = 8;
+      ctx.beginPath(); ctx.arc(px, py, 7, 0, Math.PI*2); ctx.fill();
+      ctx.shadowBlur = 0;
+
+      // Velocity decomposition
+      if (this.state.showComponents) {
+        const vScale = 1.5;
+        // vx (horizontal dashed)
+        drawArrow(ctx, px, py, px + vx * vScale, py, C.v, { dashed: true, lineWidth: 1.5, label: 'vₓ', headSize: 6 });
+        // vy (vertical dashed) — note y inverted on screen
+        drawArrow(ctx, px, py, px, py - vy * vScale, C.v, { dashed: true, lineWidth: 1.5, label: 'v_y', headSize: 6 });
+      }
+      // total velocity
+      const vScale = 1.5;
+      drawArrow(ctx, px, py, px + vx * vScale, py - vy * vScale, C.v, { lineWidth: 2.2, label: 'v', headSize: 9 });
+
+      // Acceleration (gravity)
+      drawArrow(ctx, px, py, px, py + (this.state.g) * 1.0, C.grav, { label: 'g', headSize: 7, lineWidth: 1.8 });
+    }
+  },
+
+  _drawMiniGraphs() {
+    const T = this.flightTime();
+    const t = Math.min(this.state.t, T);
+    // x(t)
+    this._drawMini('proj-x-graph', t => this.x(t), [0, this.range() * 1.08], C.x, { tNow: t, tMax: T });
+    this._drawMini('proj-y-graph', t => this.y(t), [0, this.maxHeight() * 1.15], C.x, { tNow: t, tMax: T });
+    this._drawMini('proj-vx-graph', t => this.vx(), [0, this.vx() * 1.4 || 1], C.v, { tNow: t, tMax: T });
+    this._drawMini('proj-vy-graph', t => this.vyT(t), [Math.min(this.vyT(T), 0) * 1.2, Math.max(this.vy0(), 0) * 1.2], C.v, { tNow: t, tMax: T });
+  },
+
+  _drawMini(canvasId, fn, yRange, color, opts) {
+    const canvas = document.getElementById(canvasId);
+    const { ctx, w, h } = setupHiDPI(canvas);
+    ctx.fillStyle = C.paperLight; ctx.fillRect(0, 0, w, h);
+    const ax = drawAxes(ctx, w, h, {
+      xMin: 0, xMax: opts.tMax,
+      yMin: yRange[0], yMax: yRange[1],
+      padL: 30, padR: 10, padT: 8, padB: 18,
+      xLabel: '', yLabel: '',
+      xDecimals: 1, yDecimals: 0, xTicks: 6, yTicks: 3,
+    });
+    ctx.strokeStyle = color; ctx.lineWidth = 2;
+    ctx.beginPath();
+    const N = 80;
+    for (let i = 0; i <= N; i++) {
+      const t = opts.tMax * i / N;
+      const px = ax.xToPx(t);
+      const py = ax.yToPx(fn(t));
+      if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+    }
+    ctx.stroke();
+    // Scrubber
+    const px = ax.xToPx(opts.tNow);
+    ctx.strokeStyle = C.ink;
+    ctx.lineWidth = 1.2;
+    ctx.setLineDash([3, 3]);
+    ctx.beginPath();
+    ctx.moveTo(px, ax.padT); ctx.lineTo(px, h - ax.padB);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    // Current point
+    const py = ax.yToPx(fn(opts.tNow));
+    ctx.fillStyle = color;
+    ctx.beginPath(); ctx.arc(px, py, 4, 0, Math.PI*2); ctx.fill();
+  },
+};
+
+// =============================================================================
+// MODULE 3 — Vector Playground
+// =============================================================================
+
+const Vectors = {
+  state: {
+    A: { x: 4, y: 2 },
+    B: { x: 1, y: 3 },
+    showSum: true,
+    showDiff: false,
+    showComponents: true,
+    showParallelogram: false,
+    showAngle: true,
+    dragging: null,
+  },
+
+  init() {
+    document.getElementById('vec-readout').innerHTML = `
+      <div class="readout-item"><div class="readout-label">|A|</div><div class="readout-value" id="vec-magA">—</div></div>
+      <div class="readout-item"><div class="readout-label">|B|</div><div class="readout-value" id="vec-magB">—</div></div>
+      <div class="readout-item"><div class="readout-label">θ (between)</div><div class="readout-value" id="vec-theta">—<span class="unit">°</span></div></div>
+      <div class="readout-item"><div class="readout-label">A · B</div><div class="readout-value" id="vec-dot">—</div></div>
+      <div class="readout-item"><div class="readout-label">|A × B|</div><div class="readout-value" id="vec-cross">—</div></div>
+      <div class="readout-item"><div class="readout-label">|A + B|</div><div class="readout-value" id="vec-magsum">—</div></div>
+    `;
+    ['vec-sum','vec-diff','vec-components','vec-parallelogram','vec-angle'].forEach(id => {
+      document.getElementById(id).addEventListener('change', e => {
+        const key = id.replace('vec-','show').replace(/^show/, 'show');
+        const map = { 'vec-sum':'showSum','vec-diff':'showDiff','vec-components':'showComponents','vec-parallelogram':'showParallelogram','vec-angle':'showAngle' };
+        this.state[map[id]] = e.target.checked;
+      });
+    });
+    const canvas = document.getElementById('vec-canvas');
+    canvas.addEventListener('mousedown', e => this._onDown(e, canvas));
+    canvas.addEventListener('touchstart', e => { e.preventDefault(); this._onDown(e.touches[0], canvas); }, { passive: false });
+    window.addEventListener('mousemove', e => this._onMove(e, canvas));
+    window.addEventListener('touchmove', e => { if (this.state.dragging) { this._onMove(e.touches[0], canvas); e.preventDefault(); } }, { passive: false });
+    window.addEventListener('mouseup', () => this.state.dragging = null);
+    window.addEventListener('touchend', () => this.state.dragging = null);
+  },
+
+  _layout(w, h) {
+    const padL = 36, padR = 18, padT = 18, padB = 30;
+    const plotW = w - padL - padR;
+    const plotH = h - padT - padB;
+    const xRange = 12; // -6 to 6
+    const yRange = 12;
+    const cx = padL + plotW / 2;
+    const cy = padT + plotH / 2;
+    const sx = plotW / xRange;
+    const sy = plotH / yRange;
+    const s = Math.min(sx, sy);
+    return { padL, padR, padT, padB, plotW, plotH, cx, cy, s,
+      vToPx: v => ({ x: cx + v.x * s, y: cy - v.y * s }),
+      pxToV: (px, py) => ({ x: (px - cx) / s, y: -(py - cy) / s }),
+    };
+  },
+
+  _onDown(e, canvas) {
+    const rect = canvas.getBoundingClientRect();
+    const px = e.clientX - rect.left;
+    const py = e.clientY - rect.top;
+    const lo = this._layout(rect.width, rect.height);
+    const aPos = lo.vToPx(this.state.A);
+    const bPos = lo.vToPx(this.state.B);
+    const dA = Math.hypot(px - aPos.x, py - aPos.y);
+    const dB = Math.hypot(px - bPos.x, py - bPos.y);
+    if (dA < 18 && dA <= dB) this.state.dragging = 'A';
+    else if (dB < 18) this.state.dragging = 'B';
+    if (this.state.dragging) this._onMove(e, canvas);
+  },
+  _onMove(e, canvas) {
+    if (!this.state.dragging) return;
+    const rect = canvas.getBoundingClientRect();
+    const px = e.clientX - rect.left;
+    const py = e.clientY - rect.top;
+    const lo = this._layout(rect.width, rect.height);
+    let v = lo.pxToV(px, py);
+    // snap to half-integer when close
+    const snap = 0.25;
+    if (Math.abs(v.x - Math.round(v.x / snap) * snap) < 0.08) v.x = Math.round(v.x / snap) * snap;
+    if (Math.abs(v.y - Math.round(v.y / snap) * snap) < 0.08) v.y = Math.round(v.y / snap) * snap;
+    // clamp
+    v.x = Math.max(-5.5, Math.min(5.5, v.x));
+    v.y = Math.max(-5.5, Math.min(5.5, v.y));
+    this.state[this.state.dragging] = v;
+  },
+
+  update() { /* noop */ },
+
+  render() {
+    const A = this.state.A, B = this.state.B;
+    const magA = Math.hypot(A.x, A.y);
+    const magB = Math.hypot(B.x, B.y);
+    const dot = A.x * B.x + A.y * B.y;
+    const cross = A.x * B.y - A.y * B.x;
+    const theta = (magA * magB > 0.001) ? Math.acos(Math.max(-1, Math.min(1, dot / (magA * magB)))) * 180 / Math.PI : 0;
+    const sum = { x: A.x + B.x, y: A.y + B.y };
+    const magSum = Math.hypot(sum.x, sum.y);
+    document.getElementById('vec-magA').innerHTML = `${magA.toFixed(2)}`;
+    document.getElementById('vec-magB').innerHTML = `${magB.toFixed(2)}`;
+    document.getElementById('vec-theta').innerHTML = `${theta.toFixed(1)}<span class="unit">°</span>`;
+    document.getElementById('vec-dot').innerHTML = `${dot.toFixed(2)}`;
+    document.getElementById('vec-cross').innerHTML = `${Math.abs(cross).toFixed(2)}`;
+    document.getElementById('vec-magsum').innerHTML = `${magSum.toFixed(2)}`;
+    this._draw();
+  },
+
+  _draw() {
+    const canvas = document.getElementById('vec-canvas');
+    const { ctx, w, h } = setupHiDPI(canvas);
+    ctx.fillStyle = C.paperLight; ctx.fillRect(0, 0, w, h);
+    const lo = this._layout(w, h);
+    const { cx, cy, s, padL, padR, padT, padB } = lo;
+
+    // Grid
+    ctx.strokeStyle = C.grid; ctx.lineWidth = 1;
+    for (let i = -6; i <= 6; i++) {
+      ctx.beginPath();
+      ctx.moveTo(cx + i * s, padT); ctx.lineTo(cx + i * s, h - padB);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(padL, cy + i * s); ctx.lineTo(w - padR, cy + i * s);
+      ctx.stroke();
+    }
+    // Axes
+    ctx.strokeStyle = C.ruleStrong; ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(padL, cy); ctx.lineTo(w - padR, cy);
+    ctx.moveTo(cx, padT); ctx.lineTo(cx, h - padB);
+    ctx.stroke();
+
+    // Tick numbers
+    ctx.fillStyle = C.inkFaint;
+    ctx.font = '10px JetBrains Mono, monospace';
+    ctx.textAlign = 'center';
+    for (let i = -5; i <= 5; i++) {
+      if (i !== 0) {
+        ctx.fillText(i.toString(), cx + i * s, cy + 14);
+        ctx.textAlign = 'right';
+        ctx.fillText(i.toString(), cx - 4, cy - i * s + 3);
+        ctx.textAlign = 'center';
+      }
+    }
+    ctx.fillStyle = C.inkMid;
+    ctx.font = 'italic 12px Fraunces, serif';
+    ctx.textAlign = 'right';
+    ctx.fillText('x', w - padR, cy - 4);
+    ctx.textAlign = 'left';
+    ctx.fillText('y', cx + 6, padT + 4);
+
+    const A = this.state.A, B = this.state.B;
+    const sum = { x: A.x + B.x, y: A.y + B.y };
+    const diff = { x: A.x - B.x, y: A.y - B.y };
+
+    // Components dashed
+    if (this.state.showComponents) {
+      // A components
+      ctx.strokeStyle = C.x; ctx.lineWidth = 1; ctx.setLineDash([3, 3]); ctx.globalAlpha = 0.5;
+      ctx.beginPath();
+      ctx.moveTo(cx + A.x * s, cy);
+      ctx.lineTo(cx + A.x * s, cy - A.y * s);
+      ctx.moveTo(cx, cy - A.y * s);
+      ctx.lineTo(cx + A.x * s, cy - A.y * s);
+      ctx.stroke();
+      // B components
+      ctx.strokeStyle = C.v;
+      ctx.beginPath();
+      ctx.moveTo(cx + B.x * s, cy);
+      ctx.lineTo(cx + B.x * s, cy - B.y * s);
+      ctx.moveTo(cx, cy - B.y * s);
+      ctx.lineTo(cx + B.x * s, cy - B.y * s);
+      ctx.stroke();
+      ctx.setLineDash([]); ctx.globalAlpha = 1;
+    }
+
+    // Parallelogram
+    if (this.state.showParallelogram) {
+      ctx.strokeStyle = C.vec; ctx.lineWidth = 1; ctx.setLineDash([4, 3]); ctx.globalAlpha = 0.5;
+      ctx.beginPath();
+      ctx.moveTo(cx + A.x * s, cy - A.y * s);
+      ctx.lineTo(cx + sum.x * s, cy - sum.y * s);
+      ctx.moveTo(cx + B.x * s, cy - B.y * s);
+      ctx.lineTo(cx + sum.x * s, cy - sum.y * s);
+      ctx.stroke();
+      ctx.setLineDash([]); ctx.globalAlpha = 1;
+    }
+
+    // Angle arc
+    if (this.state.showAngle && Math.hypot(A.x, A.y) > 0.1 && Math.hypot(B.x, B.y) > 0.1) {
+      const arcR = Math.min(Math.hypot(A.x, A.y), Math.hypot(B.x, B.y)) * s * 0.3;
+      const angA = Math.atan2(-A.y, A.x);
+      const angB = Math.atan2(-B.y, B.x);
+      let start = Math.min(angA, angB);
+      let end = Math.max(angA, angB);
+      if (end - start > Math.PI) { [start, end] = [end - Math.PI*2, start]; }
+      ctx.strokeStyle = C.inkMid; ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.arc(cx, cy, arcR, start, end);
+      ctx.stroke();
+      // Label
+      const labAng = (start + end) / 2;
+      ctx.fillStyle = C.inkSoft;
+      ctx.font = 'italic 600 12px Fraunces, serif';
+      ctx.textAlign = 'center';
+      const dot = A.x * B.x + A.y * B.y;
+      const theta = Math.acos(Math.max(-1, Math.min(1, dot / (Math.hypot(A.x, A.y) * Math.hypot(B.x, B.y))))) * 180 / Math.PI;
+      ctx.fillText(`θ=${theta.toFixed(0)}°`, cx + (arcR + 14) * Math.cos(labAng), cy + (arcR + 14) * Math.sin(labAng) + 4);
+    }
+
+    // Sum vector
+    if (this.state.showSum) {
+      drawArrow(ctx, cx, cy, cx + sum.x * s, cy - sum.y * s, C.vec, { lineWidth: 2.5, label: 'A+B', headSize: 9, labelFont: 'italic 600 13px Fraunces, serif' });
+    }
+    if (this.state.showDiff) {
+      drawArrow(ctx, cx, cy, cx + diff.x * s, cy - diff.y * s, C.vec, { lineWidth: 2.5, label: 'A−B', headSize: 9, labelFont: 'italic 600 13px Fraunces, serif', dashed: true });
+    }
+
+    // Vector A
+    drawArrow(ctx, cx, cy, cx + A.x * s, cy - A.y * s, C.x, { lineWidth: 3, headSize: 10, label: 'A', labelFont: 'italic 700 16px Fraunces, serif' });
+    // Vector B
+    drawArrow(ctx, cx, cy, cx + B.x * s, cy - B.y * s, C.v, { lineWidth: 3, headSize: 10, label: 'B', labelFont: 'italic 700 16px Fraunces, serif' });
+
+    // Drag handles (show small dots at tips when not actively dragging)
+    [{v: A, c: C.x, n: 'A'}, {v: B, c: C.v, n: 'B'}].forEach(it => {
+      ctx.fillStyle = it.c;
+      ctx.shadowColor = it.c; ctx.shadowBlur = 8;
+      ctx.beginPath(); ctx.arc(cx + it.v.x * s, cy - it.v.y * s, 5.5, 0, Math.PI*2); ctx.fill();
+      ctx.shadowBlur = 0;
+      ctx.fillStyle = C.paperLight;
+      ctx.beginPath(); ctx.arc(cx + it.v.x * s, cy - it.v.y * s, 2, 0, Math.PI*2); ctx.fill();
+    });
+
+    // Component labels
+    if (this.state.showComponents) {
+      ctx.font = '10px JetBrains Mono, monospace';
+      ctx.fillStyle = C.x;
+      ctx.textAlign = 'center';
+      ctx.fillText(`Aₓ=${A.x.toFixed(1)}`, cx + A.x * s / 2, cy + 14);
+      ctx.textAlign = 'left';
+      ctx.fillText(`A_y=${A.y.toFixed(1)}`, cx + 4, cy - A.y * s / 2 + 4);
+      ctx.fillStyle = C.v;
+      ctx.textAlign = 'center';
+      ctx.fillText(`Bₓ=${B.x.toFixed(1)}`, cx + B.x * s / 2, cy + 26);
+      ctx.textAlign = 'left';
+      ctx.fillText(`B_y=${B.y.toFixed(1)}`, cx + 4, cy - B.y * s / 2 + 14);
+    }
+  },
+};
+
+
+// ── Shared slider renderer ─────────────────────────────────────────────────
+function renderSliders(container, paramDefs, ids, classMap = {}) {
+  container.innerHTML = '';
+  for (const id of ids) {
+    const p = paramDefs.find(pp => pp.id === id);
+    if (!p) continue;
+    const wrap = document.createElement('div');
+    wrap.className = 'param' + (classMap[id] ? ' ' + classMap[id] : '');
+    const label = document.createElement('div');
+    label.className = 'param-label';
+    label.innerHTML = `
+      <span><span class="name">${p.label}</span><span class="desc">${p.desc}</span></span>
+      <span class="value" data-val-${p.id}></span>
+    `;
+    const input = document.createElement('input');
+    input.type = 'range';
+    input.min = p.min; input.max = p.max; input.step = p.step;
+    input.value = p.get();
+    const valueLabel = label.querySelector(`[data-val-${p.id}]`);
+    const updateLabel = () => {
+      const v = p.get();
+      valueLabel.textContent = `${(p.format ? p.format(v) : v.toFixed(2))} ${p.unit}`;
+    };
+    input.addEventListener('input', e => {
+      p.set(parseFloat(e.target.value));
+      updateLabel();
+    });
+    wrap.appendChild(label);
+    wrap.appendChild(input);
+    container.appendChild(wrap);
+    updateLabel();
+  }
+}
+
+// ── Module switching ───────────────────────────────────────────────────────
+let activeModule = 'trinity';
+const modulesMap = { trinity: Trinity, projectile: Projectile, vectors: Vectors };
+
+function setModule(name) {
+  activeModule = name;
+  document.querySelectorAll('.mod-tab').forEach(t => t.classList.toggle('active', t.dataset.module === name));
+  document.querySelectorAll('.module').forEach(m => m.classList.toggle('active', m.dataset.module === name));
+  // re-typeset MathJax for the now-visible module
+  if (window.MathJax && MathJax.typesetPromise) {
+    MathJax.typesetPromise();
+  }
+}
+
+document.querySelectorAll('.mod-tab').forEach(t => {
+  t.addEventListener('click', () => setModule(t.dataset.module));
+});
+
+// ── Init all modules ───────────────────────────────────────────────────────
+Trinity.init();
+Projectile.init();
+Vectors.init();
+
+// ── Animation loop ─────────────────────────────────────────────────────────
+let lastT = performance.now();
+function loop(now) {
+  const dt = Math.min(0.05, (now - lastT) / 1000);
+  lastT = now;
+  // Update only the active module; isolate errors so one buggy module
+  // doesn't kill the whole loop and leave other modules unrendered.
+  try {
+    const mod = modulesMap[activeModule];
+    if (mod && mod.update) mod.update(dt);
+    if (mod && mod.render) mod.render();
+  } catch (err) {
+    console.error(`[${activeModule}] render error:`, err);
+  }
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+
+// Initial typeset attempt (may run before MathJax loads)
+const tryTypeset = () => {
+  if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise();
+  else setTimeout(tryTypeset, 200);
+};
+tryTypeset();
+
+</script>
+</body>
+</html>
